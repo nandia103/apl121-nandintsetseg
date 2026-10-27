@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<flowgorithm fileversion="4.2">
+    <attributes>
+        <attribute name="name" value="quest"/>
+        <attribute name="authors" value="Owner"/>
+        <attribute name="about" value=""/>
+        <attribute name="saved" value="2026-10-26 08:19:59 PM"/>
+        <attribute name="created" value="T3duZXI7REVTS1RPUC1KNk4ySUZOOzIwMjYtMTAtMjY7MDU6MjY6MjkgUE07Mjg3MA=="/>
+        <attribute name="edited" value="T3duZXI7REVTS1RPUC1KNk4ySUZOOzIwMjYtMTAtMjY7MDg6MTk6NTkgUE07ODsyOTkz"/>
+    </attributes>
+    <function name="Main" type="None" variable="">
+        <parameters/>
+        <body>
+            <declare name="cardBalance" type="Integer" array="False" size=""/>
+            <declare name="rides" type="Integer" array="False" size=""/>
+            <declare name="cost" type="Integer" array="False" size=""/>
+            <declare name="totalCost" type="Integer" array="False" size=""/>
+            <declare name="day" type="Integer" array="False" size=""/>
+            <declare name="rechargeDay" type="Integer" array="False" size=""/>
+            <declare name="warnLimit" type="Integer" array="False" size=""/>
+            <declare name="status" type="String" array="False" size=""/>
+            <assign variable="totalCost" expression="0"/>
+            <assign variable="rechargeDay" expression="0"/>
+            <do expression="cardBalance &lt; 0">
+                <output expression="&quot;&#1069;&#1093;&#1085;&#1080;&#1081; &#1199;&#1083;&#1076;&#1101;&#1075;&#1076;&#1101;&#1083;&quot;" newline="True"/>
+                <input variable="cardBalance"/>
+            </do>
+            <do expression="warnLimit &lt; 0">
+                <output expression="&quot;&#1057;&#1072;&#1085;&#1091;&#1091;&#1083;&#1075;&#1099;&#1085; &#1093;&#1103;&#1079;&#1075;&#1072;&#1072;&#1088;: &quot;" newline="True"/>
+                <input variable="warnLimit"/>
+            </do>
+            <output expression="&quot;&#1256;&#1076;&#1257;&#1088; | &#1057;&#1091;&#1091;&#1076;&#1072;&#1083; | &#1058;&#1257;&#1083;&#1073;&#1257;&#1088; | &#1198;&#1083;&#1076;&#1101;&#1075;&#1076;&#1101;&#1083; | &#1058;&#1257;&#1083;&#1257;&#1074;&quot;" newline="True"/>
+            <for variable="day" start="1" end="7" direction="inc" step="1">
+                <do expression="rides &lt; 0">
+                    <output expression="&quot;&#1256;&#1076;&#1257;&#1088; &quot; &amp; day &amp; &quot; &#1089;&#1091;&#1091;&#1076;&#1083;&#1099;&#1085; &#1090;&#1086;&#1086;: &quot;" newline="True"/>
+                    <input variable="rides"/>
+                </do>
+                <assign variable="cost" expression="calcFare(rides)"/>
+                <assign variable="cardBalance" expression="cardBalance - cost"/>
+                <assign variable="totalCost" expression="totalCost + cost"/>
+                <if expression="cardBalance &lt; warnLimit &amp;&amp; rechargeDay == 0">
+                    <then>
+                        <assign variable="rechargeDay" expression="day"/>
+                    </then>
+                    <else/>
+                </if>
+                <if expression="cardBalance &lt; 0">
+                    <then>
+                        <assign variable="status" expression="&quot;&#1044;&#1091;&#1090;&#1089;&#1072;&#1085;&quot;"/>
+                    </then>
+                    <else>
+                        <if expression="cardBalance &lt; warnLimit">
+                            <then>
+                                <assign variable="status" expression="&quot;&#1041;&#1072;&#1075;&#1072;&quot;"/>
+                            </then>
+                            <else>
+                                <assign variable="status" expression="&quot;&#1061;&#1072;&#1085;&#1075;&#1072;&#1083;&#1090;&#1090;&#1072;&#1081;&quot;"/>
+                            </else>
+                        </if>
+                    </else>
+                </if>
+                <call expression="printRow(day, rides, cost, cardBalance, status)"/>
+            </for>
+            <if expression="rechargeDay &gt; 0">
+                <then>
+                    <output expression="&quot;&#1050;&#1072;&#1088;&#1090;&#1072;&#1072; &#1094;&#1101;&#1085;&#1101;&#1075;&#1083;&#1101;&#1093; &#1257;&#1076;&#1257;&#1088;: &quot; &amp; rechargeDay" newline="True"/>
+                </then>
+                <else>
+                    <output expression="&quot;&#1069;&#1085;&#1101; 7 &#1093;&#1086;&#1085;&#1086;&#1075;&#1090; &#1094;&#1101;&#1085;&#1101;&#1075;&#1083;&#1101;&#1093; &#1096;&#1072;&#1072;&#1088;&#1076;&#1083;&#1072;&#1075;&#1072;&#1075;&#1199;&#1081;&quot;" newline="True"/>
+                </else>
+            </if>
+            <output expression="&quot;&#1053;&#1080;&#1081;&#1090; &#1079;&#1072;&#1088;&#1094;&#1091;&#1091;&#1083;&#1089;&#1072;&#1085;: &quot; &amp; totalCost" newline="True"/>
+            <output expression="&quot;&#1069;&#1094;&#1089;&#1080;&#1081;&#1085; &#1199;&#1083;&#1076;&#1101;&#1075;&#1076;&#1101;&#1083;: &quot; &amp; cardBalance" newline="True"/>
+        </body>
+    </function>
+    <function name="calcFare" type="Integer" variable="fare">
+        <parameters>
+            <parameter name="rides" type="Integer" array="False"/>
+        </parameters>
+        <body>
+            <declare name="paid" type="Integer" array="False" size=""/>
+            <declare name="fare" type="Integer" array="False" size=""/>
+            <assign variable="paid" expression="Int((rides + 3) / 4)"/>
+            <assign variable="fare" expression="paid * 1000"/>
+        </body>
+    </function>
+    <function name="printRow" type="None" variable="">
+        <parameters>
+            <parameter name="dayNo" type="Integer" array="False"/>
+            <parameter name="rideCount" type="Integer" array="False"/>
+            <parameter name="fareCost" type="Integer" array="False"/>
+            <parameter name="balanceLeft" type="Integer" array="False"/>
+            <parameter name="statusText" type="String" array="False"/>
+        </parameters>
+        <body>
+            <output expression="dayNo &amp; &quot; | &quot; &amp; rideCount &amp; &quot; | &quot; &amp; fareCost &amp; &quot; | &quot; &amp; balanceLeft &amp; &quot; | &quot; &amp; statusText" newline="True"/>
+        </body>
+    </function>
+</flowgorithm>
